@@ -1,32 +1,29 @@
 import React from 'react'
 import { useState,useEffect } from 'react'
 
-function Fetch() {
+function Fetch( {cardName} ) {
 
-    const [ magicCards, setMagicCards ] = useState('')
+  const [ magicCards, setMagicCards ] = useState(null)
 
-    useEffect(() => {
-        fetchData();
-        console.log(magicCards)
-    }, [])
+  useEffect(() => {
+    console.log(cardName )
+    let card = cardName
 
-    const fetchData = async () => {
-        try {
-
-          const response = await fetch('https://api.scryfall.com/cards/named?exact=lightning+bolt');
-          
+    fetch(`https://api.scryfall.com/cards/named?exact=${card}`)
+      .then(response => {
           if (!response.ok) {
-            throw new Error('Network response was not ok');
+              throw new Error('No Response');
           }
-      
-          const result = await response.json();
-      
-          setMagicCards(result);
-        } catch (error) {
-
+          return response.json();
+      })
+      .then(data => {
+          setMagicCards(data);
+          console.log(data); // You can log the data here if needed
+      })
+      .catch(error => {
           console.error('Error fetching data:', error.message);
-        }
-      };
+      });
+  }, []);
       
   return (
     <div>Fetch</div>
